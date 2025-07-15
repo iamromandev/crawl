@@ -1,13 +1,10 @@
 from datetime import UTC, datetime
 from pathlib import Path
-from typing import Annotated
 from urllib.parse import urlparse
 
-import redis.asyncio as redis
 import toml
-from pydantic import Field, HttpUrl
+from pydantic import HttpUrl
 
-from src.core.clients import CacheClient
 from src.core.formats import serialize
 
 
@@ -34,17 +31,6 @@ def get_app_version() -> str:
         return "Version information not found"
     except KeyError:
         return "Version key not found in pyproject.toml"
-
-
-async def get_cache_health(
-    cache: Annotated[CacheClient, Field(...)],
-) -> bool:
-    try:
-        await cache.ping()
-        await cache.close()
-        return True
-    except redis.ConnectionError:
-        return False
 
 
 def get_file_extension_with_dot(filename: str) -> str | None:

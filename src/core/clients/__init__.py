@@ -1,19 +1,8 @@
 from collections.abc import AsyncGenerator
-from typing import Annotated
-
-from pydantic import Field, RedisDsn
 
 from src.core.config import settings
 
-from .cache import CacheClient
 from .playwright import PlaywrightClient
-
-
-async def get_cache_client(
-) -> AsyncGenerator[CacheClient]:
-    yield CacheClient(
-        cache_url=settings.cache_url
-    )
 
 
 async def get_playwright_client() -> AsyncGenerator[PlaywrightClient]:

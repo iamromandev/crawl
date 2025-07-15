@@ -70,9 +70,13 @@ class PlaywrightClient(BaseMixin, metaclass=SingletonMeta):
         page = await self.load_page(url)
         return await page.text_content(selector)
 
-    async def get_html(self, url: HttpUrl) -> str:
-        page = await self.load_page(url)
-        return await page.content()
+    async def get_html(self, url: HttpUrl) -> str | None:
+        try:
+            page = await self.load_page(url)
+            return await page.content()
+        except Exception as error:
+            logger.error(f"{self._tag}|get_html(): Failed to get HTML from {url}: {error}")
+            return None
 
     async def get_urls(self, url: HttpUrl) -> list[HttpUrl] | None:
         try:

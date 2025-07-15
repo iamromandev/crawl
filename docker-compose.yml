@@ -1,8 +1,8 @@
 services:
-  server:
+  crawler:
     platform: linux/arm64
-    hostname: server
-    container_name: server
+    hostname: crawler
+    container_name: crawler
     restart: unless-stopped
     build:
       context: .
@@ -13,16 +13,16 @@ services:
         WORK_DIR: /workdir
         INSTALL_DIR: /opt/install
     ports:
-      - "8001:8001"
+      - "8001:8000"
     volumes:
       - .:/workdir
     networks:
-      - server
+      - crawler
     command: >
-      bash -c "uvicorn src.main:app --host 0.0.0.0 --port 8001 --reload"
+      bash -c "uvicorn src.main:app --host 0.0.0.0 --port 8000 --reload"
 
 networks:
-  server:
-    name: crawl-server
+  crawler:
+    name: crawler
     driver: bridge
 

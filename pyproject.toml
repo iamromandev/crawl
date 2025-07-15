@@ -16,9 +16,6 @@ requires-python = "==3.12.10"
 dependencies = [
     "loguru==0.7.3",
     "fastapi[all]==0.115.12",
-    "tortoise-orm[accel,aiomysql]==0.25.1",
-    "aerich[toml,mysql]==0.9.1",
-    "redis==6.2.0",
     "httpx==0.28.1",
     "playwright==1.53.0",
     "spacy==3.8.6",
@@ -37,8 +34,3 @@ dev = [
 
 [tool.uv]
 package = false
-
-[tool.aerich]
-tortoise_orm = "src.db.DB_CONFIG"
-location = "./src/db/migrations"
-src_folder = "./."

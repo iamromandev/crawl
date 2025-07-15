@@ -1,22 +1,25 @@
 from typing import Annotated
 
-from fastapi import APIRouter, BackgroundTasks, Depends
+from fastapi import APIRouter, Depends, Query
 from fastapi.responses import JSONResponse
 from loguru import logger
+from pydantic import HttpUrl
 
-from src.core.constants import WEB_URL
 from src.core.success import Success
+from src.schemas.crawl import CrawlOutSchema
 from src.services import get_crawl_service
 from src.services.crawl import CrawlService
 
 router = APIRouter(prefix="/crawl", tags=["crawl"])
 
 
-@router.post(path="")
+@router.get(path="")
 async def crawl(
+    url: Annotated[HttpUrl, Query(...)],
     service: Annotated[CrawlService, Depends(get_crawl_service)],
-    bt: BackgroundTasks,
 ) -> JSONResponse:
-    logger.debug(f"Running crawl {WEB_URL}")
-    bt.add_task(service.crawl, WEB_URL)
-    return Success.ok().to_resp()
+    logger.debug(f"Running crawl {url}")
+    out: CrawlOutSchema = await service.crawl(url)
+    return Success.ok(
+        data=out
+    ).to_resp()
