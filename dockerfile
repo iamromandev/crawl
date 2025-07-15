@@ -7,13 +7,11 @@ FROM python:$PYTHON_VERSION AS base
 ARG ENV
 ARG WORK_DIR
 ARG INSTALL_DIR
-ARG PW_DIR
 
 ## environments ##
 ENV ENV=$ENV
 ENV WORK_DIR=$WORK_DIR
 ENV INSTALL_DIR=$INSTALL_DIR
-ENV PW_DIR=$PW_DIR
 # python
 ENV PYTHONUNBUFFERED=true
 ENV PYTHONFAULTHANDLER=true
@@ -31,12 +29,10 @@ FROM base AS builder
 ARG ENV
 ARG WORK_DIR
 ARG INSTALL_DIR
-ARG PW_DIR
 
 ENV ENV=$ENV
 ENV WORK_DIR=$WORK_DIR
 ENV INSTALL_DIR=$INSTALL_DIR
-ENV PW_DIR=$PW_DIR
 
 
 # install uv
@@ -52,7 +48,6 @@ RUN uv venv
 
 # install runtime deps
 RUN uv pip install -r $INSTALL_DIR/pyproject.toml
-#RUN playwright install --with-deps chromium
 
 
 ### local image ###
@@ -61,16 +56,13 @@ FROM base AS local
 ARG ENV
 ARG WORK_DIR
 ARG INSTALL_DIR
-ARG PW_DIR
 
 ENV ENV=$ENV
 ENV WORK_DIR=$WORK_DIR
 ENV INSTALL_DIR=$INSTALL_DIR
-ENV PW_DIR=$PW_DIR
 
 WORKDIR $WORK_DIR
 
 COPY --from=builder $INSTALL_DIR $INSTALL_DIR
-#COPY --from=builder /root/.cache/ms-playwright /root/.cache/ms-playwright
 COPY . $WORK_DIR
 RUN playwright install --with-deps chromium
